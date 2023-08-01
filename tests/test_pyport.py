@@ -1,6 +1,8 @@
 import pytest
 from datetime import datetime
-from pyport import Portfolio, Security, Transaction
+from pyport.portfolio import Portfolio
+from pyport.security import Security
+from pyport.transaction import Transaction
 
 transaction_date = datetime(2023, 1, 1)
 aapl = Security(name="AAPL")
@@ -25,7 +27,7 @@ def test_add_transaction():
     assert portfolio.transactions[0].date == transaction_date
 
 
-def test_invalid_types_for_trasnaction():
+def test_invalid_types_for_transaction():
     with pytest.raises(TypeError):
         Transaction(
             amount="ABC", security="null", date="invalid")

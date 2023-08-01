@@ -1,10 +1,6 @@
-from typing import List, Union
+from typing import Union
 from datetime import datetime
-
-
-class Security:
-    def __init__(self, name: str):
-        self.name = name
+from pyport.security import Security
 
 
 class Transaction:
@@ -19,13 +15,3 @@ class Transaction:
         self.date = date
         self.security = security
         self.amount = amount
-
-
-class Portfolio:
-    def __init__(self, name: str, cash_balance: float = 0):
-        self.name = name
-        self.cash_balance = cash_balance
-        self.transactions: List[Transaction] = []
-
-    def add_transaction(self, transaction: Transaction) -> None:
-        self.transactions.append(transaction)
