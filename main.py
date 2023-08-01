@@ -6,13 +6,13 @@ from pyport.transaction_manager import TransactionManager
 
 
 def main():
-    tm = TransactionManager(file_path='transactions.csv')
-    portfolio = Portfolio(name='My Portfolio', cash_balance=20000)
-    buy_aapl = Transaction(amount=15000, security=Security(
-        "AAPL"), date=datetime(2023, 1, 1))
-    portfolio.add_transaction(transaction=buy_aapl)
-    print("Portfolio cash balance: ", portfolio.cash_balance)
-    portfolio.print_transactions()
+    tm = TransactionManager(file_path='data/ex_transactions.csv')
+    portfolio = Portfolio("MyPortfolio", tm, start_balance=20000)
+    # buy_aapl = Transaction(amount=15000, security=Security(
+    #     "AAPL"), date=datetime(2023, 1, 1))
+    # portfolio.add_transaction(transaction=buy_aapl)
+    portfolio.refresh()
+    portfolio.print_info()
 
 
 if __name__ == "__main__":

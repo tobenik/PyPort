@@ -4,10 +4,10 @@ from pyport.transaction_manager import TransactionManager
 
 
 class Portfolio:
-    def __init__(self, name: str, transaction_manager: TransactionManager, starting_balance: float = 0):
+    def __init__(self, name: str, transaction_manager: TransactionManager, start_balance: float = 0):
         self.name = name
-        self.start_balance = starting_balance
-        self.current_balance = starting_balance
+        self.start_balance = start_balance
+        self.current_balance = start_balance
         self.transactions: List[Transaction] = []
         self.tm = transaction_manager
 
