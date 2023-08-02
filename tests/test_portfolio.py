@@ -25,12 +25,12 @@ def populateTestData() -> None:
 
 def test_create_portfolio() -> None:
     clearTestData()
-    p = Portfolio("Test", tfm, start_balance=50000)
+    cash = 500000
+    p = Portfolio("Test", tfm, start_balance=cash)
 
-    assert p.name == "Test"
-    assert p.start_balance == 50000
-    assert len(p.transactions) == 0
-    assert p.current_balance == p.start_balance
+    assert p.get_name() == "Test"
+    assert len(p.get_transactions()) == 0
+    assert p.get_balance() == cash
 
     clearTestData()
 
@@ -43,10 +43,9 @@ def test_add_transaction_to_empty() -> None:
 
     p.add_transaction(t)
 
-    assert len(p.transactions) == 1
-    assert p.transactions[0] == t
-    assert p.current_balance == 50000 - t.get_dict()["amount"]
-    assert p.start_balance == 50000
+    assert len(p.get_transactions()) == 1
+    assert p.get_transactions()[0] == t.get_dict()
+    assert p.get_balance() == 50000 - t.get_dict()["amount"]
 
     clearTestData()
 
@@ -58,15 +57,14 @@ def test_add_transaction_to_existing() -> None:
     p = Portfolio("Test", tfm, start_balance=50000)
 
     # Check that data file was populated and p reads in transactions
-    pre_transactions = len(p.transactions)
-    pre_balance = p.current_balance
+    pre_transactions = len(p.get_transactions())
+    pre_balance = p.get_balance()
     assert pre_transactions > 1
 
     p.add_transaction(t)
 
-    assert len(p.transactions) == pre_transactions + 1
-    assert p.transactions[-1] == t
-    assert p.current_balance == pre_balance - t.get_dict()["amount"]
-    assert p.start_balance == 50000
+    assert len(p.get_transactions()) == pre_transactions + 1
+    assert p.get_transactions()[-1] == t.get_dict()
+    assert p.get_balance() == pre_balance - t.get_dict()["amount"]
 
     clearTestData()
