@@ -6,10 +6,10 @@ from pyport.transaction_file_manager import TransactionFileManager
 
 data_path = "tests/testdata/transactions.csv"
 ex_data = [
-    {"date": datetime(2023, 1, 1), "name": "AAPL", "amount": 2000},
-    {"date": datetime(2023, 1, 1), "name": "AMZN", "amount": 100},
-    {"date": datetime(2023, 2, 1), "name": "AAPL", "amount": -1000},
-    {"date": datetime(2023, 2, 2), "name": "TSLA", "amount": 300}]
+    {"date": datetime(2023, 1, 1), "security": "AAPL", "amount": 2000},
+    {"date": datetime(2023, 1, 1), "security": "AMZN", "amount": 100},
+    {"date": datetime(2023, 2, 1), "security": "AAPL", "amount": -1000},
+    {"date": datetime(2023, 2, 2), "security": "TSLA", "amount": 300}]
 headers = list(ex_data[0].keys())
 
 ### Start: Helper functions ###
@@ -50,7 +50,7 @@ def test_read_with_populated_file():
     populateTestData()
     tfm = TransactionFileManager(data_path)
     first_transaction = Transaction(
-        ex_data[0]["amount"], ex_data[0]["name"], ex_data[0]["date"])
+        ex_data[0]["amount"], ex_data[0]["security"], ex_data[0]["date"])
 
     assert tfm.file_path == data_path
     assert tfm.headers == headers

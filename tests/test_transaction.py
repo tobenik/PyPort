@@ -30,7 +30,7 @@ def test_get_dict():
     security = "AAPL"
     t = Transaction(amount=amount, security=security, date=date)
 
-    expected = {"date": date, "name": security, "amount": amount}
+    expected = {"date": date, "security": security, "amount": amount}
     actual = t.get_dict()
 
     assert expected == actual

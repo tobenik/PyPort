@@ -29,6 +29,6 @@ class Portfolio:
         separator = "\n- * - * - * - *\n"
         holdings = ""
         for t in self.transactions:
-            holdings += f"{t.security.name}: {t.amount} | {t.date} \n"
+            holdings += f"{t.security}: {t.amount} | {t.date} \n"
         print("HOLDINGS", holdings, sep=separator)
         print("BALANCE", self.current_balance, sep=separator)
