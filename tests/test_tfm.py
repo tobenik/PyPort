@@ -1,7 +1,6 @@
+import pytest
 import csv
 from datetime import datetime
-import pytest
-from pyport.security import Security
 from pyport.transaction import Transaction
 from pyport.transaction_file_manager import TransactionFileManager
 
@@ -51,7 +50,7 @@ def test_read_with_populated_file():
     populateTestData()
     tfm = TransactionFileManager(data_path)
     first_transaction = Transaction(
-        ex_data[0]["amount"], Security(ex_data[0]["name"]), ex_data[0]["date"])
+        ex_data[0]["amount"], ex_data[0]["name"], ex_data[0]["date"])
 
     assert tfm.file_path == data_path
     assert tfm.headers == headers
@@ -62,7 +61,7 @@ def test_read_with_populated_file():
 def test_add_with_empty_file():
     clearTestData()
     tfm = TransactionFileManager(data_path)
-    t = Transaction(1000, Security("MSFT"), datetime(2000, 1, 1))
+    t = Transaction(1000, "MSFT", datetime(2000, 1, 1))
     tfm.add_transaction(t)
 
     assert tfm.file_path == data_path

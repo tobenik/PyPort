@@ -2,7 +2,6 @@ import csv
 import os
 from datetime import datetime
 from typing import List
-from pyport.security import Security
 from pyport.transaction import Transaction
 
 
@@ -31,15 +30,14 @@ class TransactionFileManager:
             reader = csv.DictReader(csvFile)
             for row in reader:
                 amount = float(row['amount'])
-                security_name = row['name']
+                security = row['name']
                 date_str = row['date']
-
                 date = datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
-                security = Security(name=security_name)
+
                 transaction = Transaction(
                     amount=amount, security=security, date=date)
-
                 transactions.append(transaction)
+
         return transactions
 
     def add_transaction(self, transaction: Transaction) -> None:

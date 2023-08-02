@@ -1,7 +1,6 @@
 from datetime import datetime
 import pytest
 from pyport.portfolio import Portfolio
-from pyport.security import Security
 from pyport.transaction import Transaction
 from pyport.transaction_file_manager import TransactionFileManager
 
@@ -15,13 +14,13 @@ def clearTestData() -> None:
 
 def populateTestData() -> None:
     tfm.add_transaction(Transaction(
-        25000, Security("AAPL"), datetime(2000, 1, 1)))
+        25000, "AAPL", datetime(2000, 1, 1)))
     tfm.add_transaction(Transaction(
-        25000, Security("AAPL"), datetime(2000, 2, 2)))
+        25000, "AAPL", datetime(2000, 2, 2)))
     tfm.add_transaction(Transaction(
-        25000, Security("AMZN"), datetime(2000, 3, 3)))
+        25000, "AMZN", datetime(2000, 3, 3)))
     tfm.add_transaction(Transaction(
-        25000, Security("MSFT"), datetime(2000, 4, 4)))
+        25000, "MSFT", datetime(2000, 4, 4)))
 
 
 def test_create_portfolio() -> None:
@@ -38,7 +37,7 @@ def test_create_portfolio() -> None:
 
 def test_add_transaction_to_empty() -> None:
     clearTestData()
-    s = Security("AAPL")
+    s = "AAPL"
     t = Transaction(25000, s, datetime(2000, 1, 1))
     p = Portfolio("Test", tfm, start_balance=50000)
 
@@ -51,9 +50,10 @@ def test_add_transaction_to_empty() -> None:
 
     clearTestData()
 
+
 def test_add_transaction_to_existing() -> None:
     populateTestData()
-    s = Security("TSLA")
+    s = "TSLA"
     t = Transaction(2500, s, datetime(2000, 5, 5))
     p = Portfolio("Test", tfm, start_balance=50000)
 
@@ -70,4 +70,3 @@ def test_add_transaction_to_existing() -> None:
     assert p.start_balance == 50000
 
     clearTestData()
-

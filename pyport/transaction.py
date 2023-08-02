@@ -1,14 +1,13 @@
 from typing import Union
 from datetime import datetime
-from pyport.security import Security
 
 
 class Transaction:
-    def __init__(self, amount: Union[int, float], security: Security, date: datetime):
+    def __init__(self, amount: Union[int, float], security: str, date: datetime):
         if not isinstance(amount, (int, float)):
             raise TypeError("amount must be of type int or float.")
-        if not isinstance(security, Security):
-            raise TypeError("security must be an instance of Security")
+        if not isinstance(security, str):
+            raise TypeError("security must be of type string")
         if not isinstance(date, datetime):
             raise TypeError("date must be an instance of datetime")
 
@@ -16,7 +15,7 @@ class Transaction:
         self.security = security
         self.amount = amount
 
-    def get_dict(self) -> dict[str, Union[int, float, Security, datetime]]:
+    def get_dict(self) -> dict[str, Union[int, float, str, datetime]]:
         as_dict = {"date": self.date,
-                   "name": self.security.name, "amount": self.amount}
+                   "name": self.security, "amount": self.amount}
         return as_dict
