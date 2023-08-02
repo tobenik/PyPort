@@ -116,14 +116,48 @@ def test_fetch_transactions_after_adding_new_ones():
 def test_add_sell_transaction():
     clearTestData()
     p = Portfolio("Test", tfm, start_balance=1000)
-
     t = Transaction(date(2000, 1, 1), "AAPL", -50, 25.50)
 
-    # Add the transaction
     p.add_transaction(t)
 
-    # Verify that the transaction was added correctly and balance is updated correctly
     assert len(p.get_transactions()) == 1
     assert p.get_balance() == 1000 - t.get_total()
+
+    clearTestData()
+
+
+def test_get_holdings_empty_portfolio():
+    clearTestData()
+    p = Portfolio("Test", tfm, start_balance=1000)
+
+    assert p.get_holdings() == {}
+
+    clearTestData()
+
+
+def test_get_holdings_single_security():
+    clearTestData()
+    p = Portfolio("Test", tfm, start_balance=1000)
+    t1 = Transaction(date(2000, 1, 1), "AAPL", 50, 25.50)
+    t2 = Transaction(date(2000, 1, 2), "AAPL", 30, 30.75)
+    p.add_transaction(t1)
+    p.add_transaction(t2)
+
+    assert p.get_holdings() == {"AAPL": 50 + 30}
+
+    clearTestData()
+
+
+def test_get_holdings_multiple_securities():
+    clearTestData()
+    p = Portfolio("Test", tfm, start_balance=1000)
+    t1 = Transaction(date(2000, 1, 1), "AAPL", 50, 25.50)
+    t2 = Transaction(date(2000, 1, 2), "AMZN", 30, 30.75)
+    t3 = Transaction(date(2000, 1, 3), "AAPL", 20, 40.00)
+    p.add_transaction(t1)
+    p.add_transaction(t2)
+    p.add_transaction(t3)
+
+    assert p.get_holdings() == {"AAPL": 50 + 20, "AMZN": 30}
 
     clearTestData()

@@ -19,17 +19,27 @@ class Portfolio:
         for t in self.__transactions:
             balance -= t.get_total()
         return balance
-    
-    def get_name(self) -> str:
-        return self.__name
-
-    def get_balance(self) -> float:
-        return self.__current_balance
-    
-    def get_transactions(self) -> List[Transaction]:
-        return [t for t in self.__transactions]
 
     def add_transaction(self, transaction: Transaction) -> None:
         self.__transactions.append(transaction)
         self.__current_balance -= transaction.get_total()
         self.__tfm.add_transaction(transaction=transaction)
+
+    def get_name(self) -> str:
+        return self.__name
+
+    def get_balance(self) -> float:
+        return self.__current_balance
+
+    def get_transactions(self) -> List[Transaction]:
+        return self.__transactions
+
+    def get_holdings(self) -> dict[str, int]:
+        holdings = {}
+        for t in self.get_transactions():
+            s = t.get_security()
+            if s in holdings:
+                holdings[s] += t.get_quantity()
+            else:
+                holdings[s] = t.get_quantity()
+        return holdings
