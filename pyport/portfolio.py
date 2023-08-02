@@ -25,14 +25,22 @@ class Portfolio:
         self.current_balance -= transaction.get_dict()["amount"]
         self.tfm.add_transaction(transaction=transaction)
 
-    def print_info(self):
-        separator = "\n- * - * - * - *\n"
-        holdings = ""
+    def print_info(self) -> None:
+        def print_header(header: str) -> None:
+            LINEWIDTH = 50
+            SECTION_PATTERN = "-"
+            filling = f"{(LINEWIDTH-len(header))//2 * SECTION_PATTERN}"
+            section_header = f"{filling}{header}{filling}"
+            print(f"{section_header}{'-' if len(section_header) % 2 == 1 else ''}")
+
+        transactions_str = ""
         for t in self.transactions:
             t_dict = t.get_dict()
             s = t_dict["security"]
             a = t_dict["amount"]
             d = t_dict["date"]
-            holdings += f"{s}: {a} | {d} \n"
-        print("HOLDINGS", holdings, sep=separator)
-        print("BALANCE", self.current_balance, sep=separator)
+            transactions_str += f"{s}\t|\t{a}\t|\t{d}\n"
+        print_header("BALANCE")
+        print(self.current_balance)
+        print_header("TRANSACTIONS")
+        print(transactions_str)
