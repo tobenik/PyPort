@@ -15,3 +15,8 @@ class Transaction:
         self.date = date
         self.security = security
         self.amount = amount
+
+    def get_dict(self) -> dict[str, Union[int, float, Security, datetime]]:
+        as_dict = {"date": self.date,
+                   "name": self.security.name, "amount": self.amount}
+        return as_dict
