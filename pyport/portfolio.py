@@ -17,7 +17,7 @@ class Portfolio:
     def __compute_balance(self):
         balance = self.__start_balance
         for t in self.__transactions:
-            balance -= t.get_dict()["amount"]
+            balance -= t.get_total()
         return balance
     
     def get_name(self) -> str:
@@ -31,7 +31,7 @@ class Portfolio:
 
     def add_transaction(self, transaction: Transaction) -> None:
         self.__transactions.append(transaction)
-        self.__current_balance -= transaction.get_dict()["amount"]
+        self.__current_balance -= transaction.get_total()
         self.__tfm.add_transaction(transaction=transaction)
 
     def print_info(self) -> None:
@@ -44,11 +44,11 @@ class Portfolio:
 
         transactions_str = ""
         for t in self.__transactions:
-            t_dict = t.get_dict()
-            s = t_dict["security"]
-            a = t_dict["amount"]
-            d = t_dict["date"]
-            transactions_str += f"{s}\t|\t{a}\t|\t{d}\n"
+            d = t.get_transaction_date()
+            s = t.get_security()
+            q = t.get_quantity()
+            p = t.get_price()
+            transactions_str += f"{s}\t|\t{q} at {p}€\t|\t{d}\n"
         print_header("BALANCE")
         print(self.get_balance())
         print_header("TRANSACTIONS")

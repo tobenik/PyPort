@@ -6,10 +6,10 @@ from pyport.transaction_file_manager import TransactionFileManager
 
 data_path = "tests/testdata/transactions.csv"
 ex_data = [
-    {"date": date(2023, 1, 1), "security": "AAPL", "amount": 2000},
-    {"date": date(2023, 1, 1), "security": "AMZN", "amount": 100},
-    {"date": date(2023, 2, 1), "security": "AAPL", "amount": -1000},
-    {"date": date(2023, 2, 2), "security": "TSLA", "amount": 300}]
+    {"date": date(2023, 1, 1), "security": "AAPL", "quantity": 20, "price": 100},
+    {"date": date(2023, 1, 1), "security": "AMZN", "quantity": 100, "price": 23.67},
+    {"date": date(2023, 2, 1), "security": "AAPL", "quantity": -10, "price": 34.53},
+    {"date": date(2023, 2, 2), "security": "TSLA", "quantity": 30, "price": 0.42}]
 headers = list(ex_data[0].keys())
 
 ### Start: Helper functions ###
@@ -49,8 +49,7 @@ def test_read_with_populated_file():
     clearTestData()
     populateTestData()
     tfm = TransactionFileManager(data_path)
-    first_transaction = Transaction(
-        ex_data[0]["amount"], ex_data[0]["security"], ex_data[0]["date"])
+    first_transaction = Transaction(*list(ex_data[0].values()))
 
     assert tfm.file_path == data_path
     assert tfm.headers == headers
@@ -61,7 +60,7 @@ def test_read_with_populated_file():
 def test_add_with_empty_file():
     clearTestData()
     tfm = TransactionFileManager(data_path)
-    t = Transaction(1000, "MSFT", date(2000, 1, 1))
+    t = Transaction(*list(ex_data[0].values()))
     tfm.add_transaction(t)
 
     assert tfm.file_path == data_path

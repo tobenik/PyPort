@@ -1,2 +1,2 @@
-date,security,amount
-2000-01-01,MSFT,1000
+date,security,quantity,price
+2023-01-01,AAPL,20,100.0

@@ -13,14 +13,10 @@ def clearTestData() -> None:
 
 
 def populateTestData() -> None:
-    tfm.add_transaction(Transaction(
-        25000, "AAPL", date(2000, 1, 1)))
-    tfm.add_transaction(Transaction(
-        25000, "AAPL", date(2000, 2, 2)))
-    tfm.add_transaction(Transaction(
-        25000, "AMZN", date(2000, 3, 3)))
-    tfm.add_transaction(Transaction(
-        25000, "MSFT", date(2000, 4, 4)))
+    tfm.add_transaction(Transaction(date(2000, 1, 1), "AAPL", 250, 12.34))
+    tfm.add_transaction(Transaction(date(2000, 1, 1), "AMZN", 520, 13.24))
+    tfm.add_transaction(Transaction(date(2000, 3, 3), "AAPL", 205, 14.32))
+    tfm.add_transaction(Transaction(date(2000, 4, 4), "MSFT", 502, 12.43))
 
 
 def test_create_portfolio() -> None:
@@ -38,14 +34,14 @@ def test_create_portfolio() -> None:
 def test_add_transaction_to_empty() -> None:
     clearTestData()
     s = "AAPL"
-    t = Transaction(25000, s, date(2000, 1, 1))
+    t = Transaction(date(2000, 1, 1), s, 250, 43.21)
     p = Portfolio("Test", tfm, start_balance=50000)
 
     p.add_transaction(t)
 
     assert len(p.get_transactions()) == 1
     assert p.get_transactions()[0] == t.get_dict()
-    assert p.get_balance() == 50000 - t.get_amount()
+    assert p.get_balance() == 50000 - t.get_total()
 
     clearTestData()
 
@@ -53,7 +49,7 @@ def test_add_transaction_to_empty() -> None:
 def test_add_transaction_to_existing() -> None:
     populateTestData()
     s = "TSLA"
-    t = Transaction(2500, s, date(2000, 5, 5))
+    t = Transaction(date(2000, 1, 1), s, 250, 43.21)
     p = Portfolio("Test", tfm, start_balance=50000)
 
     # Check that data file was populated and p reads in transactions
@@ -65,6 +61,6 @@ def test_add_transaction_to_existing() -> None:
 
     assert len(p.get_transactions()) == pre_transactions + 1
     assert p.get_transactions()[-1] == t.get_dict()
-    assert p.get_balance() == pre_balance - t.get_amount()
+    assert p.get_balance() == pre_balance - t.get_total()
 
     clearTestData()
