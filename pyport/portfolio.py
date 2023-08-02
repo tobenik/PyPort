@@ -17,18 +17,22 @@ class Portfolio:
     def compute_balance(self):
         balance = self.start_balance
         for t in self.transactions:
-            balance -= t.amount
+            balance -= t.get_dict()["amount"]
         return balance
 
     def add_transaction(self, transaction: Transaction) -> None:
         self.transactions.append(transaction)
-        self.current_balance -= transaction.amount
+        self.current_balance -= transaction.get_dict()["amount"]
         self.tfm.add_transaction(transaction=transaction)
 
     def print_info(self):
         separator = "\n- * - * - * - *\n"
         holdings = ""
         for t in self.transactions:
-            holdings += f"{t.security}: {t.amount} | {t.date} \n"
+            t_dict = t.get_dict()
+            s = t_dict["security"]
+            a = t_dict["amount"]
+            d = t_dict["date"]
+            holdings += f"{s}: {a} | {d} \n"
         print("HOLDINGS", holdings, sep=separator)
         print("BALANCE", self.current_balance, sep=separator)

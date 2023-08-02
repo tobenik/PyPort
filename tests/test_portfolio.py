@@ -1,5 +1,5 @@
-from datetime import datetime
 import pytest
+from datetime import date
 from pyport.portfolio import Portfolio
 from pyport.transaction import Transaction
 from pyport.transaction_file_manager import TransactionFileManager
@@ -14,13 +14,13 @@ def clearTestData() -> None:
 
 def populateTestData() -> None:
     tfm.add_transaction(Transaction(
-        25000, "AAPL", datetime(2000, 1, 1)))
+        25000, "AAPL", date(2000, 1, 1)))
     tfm.add_transaction(Transaction(
-        25000, "AAPL", datetime(2000, 2, 2)))
+        25000, "AAPL", date(2000, 2, 2)))
     tfm.add_transaction(Transaction(
-        25000, "AMZN", datetime(2000, 3, 3)))
+        25000, "AMZN", date(2000, 3, 3)))
     tfm.add_transaction(Transaction(
-        25000, "MSFT", datetime(2000, 4, 4)))
+        25000, "MSFT", date(2000, 4, 4)))
 
 
 def test_create_portfolio() -> None:
@@ -38,14 +38,14 @@ def test_create_portfolio() -> None:
 def test_add_transaction_to_empty() -> None:
     clearTestData()
     s = "AAPL"
-    t = Transaction(25000, s, datetime(2000, 1, 1))
+    t = Transaction(25000, s, date(2000, 1, 1))
     p = Portfolio("Test", tfm, start_balance=50000)
 
     p.add_transaction(t)
 
     assert len(p.transactions) == 1
     assert p.transactions[0] == t
-    assert p.current_balance == 50000 - t.amount
+    assert p.current_balance == 50000 - t.get_dict()["amount"]
     assert p.start_balance == 50000
 
     clearTestData()
@@ -54,7 +54,7 @@ def test_add_transaction_to_empty() -> None:
 def test_add_transaction_to_existing() -> None:
     populateTestData()
     s = "TSLA"
-    t = Transaction(2500, s, datetime(2000, 5, 5))
+    t = Transaction(2500, s, date(2000, 5, 5))
     p = Portfolio("Test", tfm, start_balance=50000)
 
     # Check that data file was populated and p reads in transactions
@@ -66,7 +66,7 @@ def test_add_transaction_to_existing() -> None:
 
     assert len(p.transactions) == pre_transactions + 1
     assert p.transactions[-1] == t
-    assert p.current_balance == pre_balance - t.amount
+    assert p.current_balance == pre_balance - t.get_dict()["amount"]
     assert p.start_balance == 50000
 
     clearTestData()

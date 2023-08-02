@@ -1,15 +1,15 @@
 import pytest
 import csv
-from datetime import datetime
+from datetime import date
 from pyport.transaction import Transaction
 from pyport.transaction_file_manager import TransactionFileManager
 
 data_path = "tests/testdata/transactions.csv"
 ex_data = [
-    {"date": datetime(2023, 1, 1), "security": "AAPL", "amount": 2000},
-    {"date": datetime(2023, 1, 1), "security": "AMZN", "amount": 100},
-    {"date": datetime(2023, 2, 1), "security": "AAPL", "amount": -1000},
-    {"date": datetime(2023, 2, 2), "security": "TSLA", "amount": 300}]
+    {"date": date(2023, 1, 1), "security": "AAPL", "amount": 2000},
+    {"date": date(2023, 1, 1), "security": "AMZN", "amount": 100},
+    {"date": date(2023, 2, 1), "security": "AAPL", "amount": -1000},
+    {"date": date(2023, 2, 2), "security": "TSLA", "amount": 300}]
 headers = list(ex_data[0].keys())
 
 ### Start: Helper functions ###
@@ -61,7 +61,7 @@ def test_read_with_populated_file():
 def test_add_with_empty_file():
     clearTestData()
     tfm = TransactionFileManager(data_path)
-    t = Transaction(1000, "MSFT", datetime(2000, 1, 1))
+    t = Transaction(1000, "MSFT", date(2000, 1, 1))
     tfm.add_transaction(t)
 
     assert tfm.file_path == data_path

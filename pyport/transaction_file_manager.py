@@ -32,10 +32,9 @@ class TransactionFileManager:
                 amount = float(row['amount'])
                 security = row['security']
                 date_str = row['date']
-                date = datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
+                date_date = datetime.strptime(date_str, '%Y-%m-%d').date()
 
-                transaction = Transaction(
-                    amount=amount, security=security, date=date)
+                transaction = Transaction(amount, security, date_date)
                 transactions.append(transaction)
 
         return transactions
