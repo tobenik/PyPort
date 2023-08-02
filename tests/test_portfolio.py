@@ -45,7 +45,7 @@ def test_add_transaction_to_empty() -> None:
 
     assert len(p.get_transactions()) == 1
     assert p.get_transactions()[0] == t.get_dict()
-    assert p.get_balance() == 50000 - t.get_dict()["amount"]
+    assert p.get_balance() == 50000 - t.get_amount()
 
     clearTestData()
 
@@ -65,6 +65,6 @@ def test_add_transaction_to_existing() -> None:
 
     assert len(p.get_transactions()) == pre_transactions + 1
     assert p.get_transactions()[-1] == t.get_dict()
-    assert p.get_balance() == pre_balance - t.get_dict()["amount"]
+    assert p.get_balance() == pre_balance - t.get_amount()
 
     clearTestData()

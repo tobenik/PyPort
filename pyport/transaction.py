@@ -15,7 +15,18 @@ class Transaction:
         self.__security = security
         self.__amount = amount
 
+    def get_transaction_date(self) -> str:
+        return datetime.strftime(self.__transaction_date, '%Y-%m-%d')
+
+    def get_security(self) -> str:
+        return self.__security
+
+    def get_amount(self) -> float:
+        return self.__amount
+
     def get_dict(self) -> dict[str, Union[int, float, str, date]]:
-        as_dict = {"date": datetime.strftime(self.__transaction_date, '%Y-%m-%d'),
-                   "security": self.__security, "amount": self.__amount}
-        return as_dict
+        return {
+            "date": self.get_transaction_date(),
+            "security": self.get_security(),
+            "amount": self.get_amount()
+        }

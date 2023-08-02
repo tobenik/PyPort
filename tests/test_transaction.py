@@ -8,11 +8,10 @@ def test_create_transaction():
     transaction_date = date(2000, 1, 1)
     security = "AAPL"
     t = Transaction(amount, security, transaction_date)
-    t_dict = t.get_dict()
 
-    assert t_dict["date"] == datetime.strftime(transaction_date, '%Y-%m-%d')
-    assert t_dict["amount"] == amount
-    assert t_dict["security"] == security
+    assert t.get_transaction_date() == datetime.strftime(transaction_date, '%Y-%m-%d')
+    assert t.get_amount() == amount
+    assert t.get_security() == security
 
 
 def test_wrong_types_raise():
