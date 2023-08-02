@@ -40,3 +40,22 @@ def test_get_dict():
     actual = t.get_dict()
 
     assert expected == actual
+
+def test_get_total():
+    quantity = 100
+    price = 15.20
+    transaction_date = date(2000, 1, 1)
+    security = "AAPL"
+    t = Transaction(transaction_date, security, quantity, price)
+
+    expected_total = quantity * price
+    assert t.get_total() == expected_total
+
+def test_invalid_date_format_raises():
+    invalid_date_format = "2022/01/01"
+    security = "AAPL"
+    quantity = 100
+    price = 12.34
+
+    with pytest.raises(TypeError):
+        Transaction(invalid_date_format, security, quantity, price)

@@ -40,8 +40,30 @@ def test_add_transaction_to_empty() -> None:
     p.add_transaction(t)
 
     assert len(p.get_transactions()) == 1
-    assert p.get_transactions()[0] == t.get_dict()
+    assert p.get_transactions()[0].get_dict() == t.get_dict()
     assert p.get_balance() == 50000 - t.get_total()
+
+    clearTestData()
+
+
+def test_add_multiple_to_empty():
+    clearTestData()
+    p = Portfolio("Test", tfm, start_balance=1000)
+
+    transactions_to_add = [
+        Transaction(date(2000, 1, 1), "AAPL", 50, 25.50),
+        Transaction(date(2000, 1, 2), "AMZN", 30, 30.75),
+        Transaction(date(2000, 1, 3), "MSFT", 20, 40.00)
+    ]
+
+    # Add multiple transactions at once
+    for t in transactions_to_add:
+        p.add_transaction(t)
+
+    # Verify that all transactions were added and balance is updated correctly
+    assert len(p.get_transactions()) == len(transactions_to_add)
+    assert p.get_balance() == 1000 - sum(t.get_total()
+                                         for t in transactions_to_add)
 
     clearTestData()
 
@@ -60,7 +82,48 @@ def test_add_transaction_to_existing() -> None:
     p.add_transaction(t)
 
     assert len(p.get_transactions()) == pre_transactions + 1
-    assert p.get_transactions()[-1] == t.get_dict()
+    assert p.get_transactions()[-1].get_dict() == t.get_dict()
     assert p.get_balance() == pre_balance - t.get_total()
+
+    clearTestData()
+
+
+def test_fetch_transactions_after_adding_new_ones():
+    clearTestData()
+    p = Portfolio("Test", tfm, start_balance=1000)
+
+    transactions_to_add = [
+        Transaction(date(2000, 1, 1), "AAPL", 50, 25.50),
+        Transaction(date(2000, 1, 2), "AMZN", 30, 30.75),
+        Transaction(date(2000, 1, 3), "MSFT", 20, 40.00)
+    ]
+
+    # Add multiple transactions at once
+    for t in transactions_to_add:
+        p.add_transaction(t)
+
+    # Fetch transactions after adding new ones
+    fetched_transactions = p.get_transactions()
+
+    # Verify that the fetched transactions list is equal to the added transactions
+    assert len(fetched_transactions) == len(transactions_to_add)
+    for t1, t2 in zip(fetched_transactions, transactions_to_add):
+        assert t1.get_dict() == t2.get_dict()
+
+    clearTestData()
+
+
+def test_add_sell_transaction():
+    clearTestData()
+    p = Portfolio("Test", tfm, start_balance=1000)
+
+    t = Transaction(date(2000, 1, 1), "AAPL", -50, 25.50)
+
+    # Add the transaction
+    p.add_transaction(t)
+
+    # Verify that the transaction was added correctly and balance is updated correctly
+    assert len(p.get_transactions()) == 1
+    assert p.get_balance() == 1000 - t.get_total()
 
     clearTestData()

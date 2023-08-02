@@ -26,7 +26,7 @@ class Portfolio:
     def get_balance(self) -> float:
         return self.__current_balance
     
-    def get_transactions(self):
+    def get_transactions(self) -> List[Transaction]:
         return [t for t in self.__transactions]
 
     def add_transaction(self, transaction: Transaction) -> None:
