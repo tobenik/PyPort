@@ -3,35 +3,35 @@ from datetime import date, datetime
 
 
 class Transaction:
-    def __init__(self, trans_date: date, security: str, quantity: int, price: float):
+    def __init__(self, transactionDate: date, securityName: str, quantity: int, price: float):
         if not isinstance(quantity, (int, float)):
             raise TypeError("amount must be of type int or float.")
         if not isinstance(price, (int, float)):
             raise TypeError("amount must be of type int or float.")
-        if not isinstance(security, str):
+        if not isinstance(securityName, str):
             raise TypeError("security must be of type string")
-        if not isinstance(trans_date, date):
+        if not isinstance(transactionDate, date):
             raise TypeError("date must be an instance of datetime")
 
-        self.__transaction_date = trans_date
-        self.__security = security
-        self.__quantity = int(quantity)
-        self.__price = float(price)
+        self.transactionDate = transactionDate
+        self.securityName = securityName
+        self.quantity = int(quantity)
+        self.price = float(price)
 
     def get_transaction_date(self) -> str:
-        return datetime.strftime(self.__transaction_date, '%Y-%m-%d')
+        return datetime.strftime(self.transactionDate, '%Y-%m-%d')
 
     def get_security(self) -> str:
-        return self.__security
+        return self.securityName
 
     def get_quantity(self) -> int:
-        return self.__quantity
+        return self.quantity
     
     def get_price(self) -> float:
-        return self.__price
+        return self.price
 
     def get_total(self) -> float:
-        return self.__quantity * self.__price
+        return self.quantity * self.price
 
     def get_dict(self) -> dict[str, Union[int, str]]:
         return {

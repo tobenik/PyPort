@@ -1,3 +1,4 @@
+from datetime import date
 from typing import List
 from pyport.transaction import Transaction
 from pyport.transaction_file_manager import TransactionFileManager
@@ -20,7 +21,13 @@ class Portfolio:
             balance -= t.get_total()
         return balance
 
-    def add_transaction(self, transaction: Transaction) -> None:
+    def add_transaction(self, transactionDate: date, securityName: str, quantity: int, price: float) -> None:
+        transaction = Transaction(
+            transactionDate=transactionDate,
+            securityName=securityName,
+            quantity=quantity,
+            price=price
+        )
         self.transactions.append(transaction)
         self.current_balance -= transaction.get_total()
         self.tfm.add_transaction(transaction=transaction)

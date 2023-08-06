@@ -1,14 +1,42 @@
 import pytest
-from datetime import date
+from datetime import date, datetime
 from pyport.portfolio import Portfolio
 from pyport.transaction import Transaction
 from pyport.transaction_file_manager import TransactionFileManager
 
 tfm = None
+example_transactions = [
+    {
+        "transactionDate": date(2000, 1, 1),
+        "securityName": "AAPL",
+        "quantity": 25,
+        "price": 380.50
+    },
+    {
+        "transactionDate": date(2001, 1, 1),
+        "securityName": "AAPL",
+        "quantity": 15,
+        "price": 420.30
+    },
+    {
+        "transactionDate": date(2001, 5, 14),
+        "securityName": "MSFT",
+        "quantity": 250,
+        "price": 12.46
+    },
+    {
+        "transactionDate": date(2002, 10, 11),
+        "securityName": "TSLA",
+        "quantity": 8,
+        "price": 1095.50
+    },
+]
+
 
 def test_initalize_tfm() -> None:
     global tfm
     tfm = TransactionFileManager()
+
 
 def clearTestData() -> None:
     tfm.clear_transactions()
@@ -35,15 +63,16 @@ def test_create_portfolio() -> None:
 
 def test_add_transaction_to_empty() -> None:
     clearTestData()
-    s = "AAPL"
-    t = Transaction(date(2000, 1, 1), s, 250, 43.21)
     p = Portfolio("Test", start_balance=50000)
-
-    p.add_transaction(t)
+    t = example_transactions[0]
+    p.add_transaction(**t)
 
     assert len(p.get_transactions()) == 1
-    assert p.get_transactions()[0].get_dict() == t.get_dict()
-    assert p.get_balance() == 50000 - t.get_total()
+    assert p.get_transactions()[0].get_price() == t['price']
+    assert p.get_transactions()[0].get_quantity() == t['quantity']
+    assert p.get_transactions()[0].get_security() == t['securityName']
+    assert p.get_transactions()[0].get_transaction_date() == datetime.strftime(t['transactionDate'], "%Y-%m-%d")
+    assert p.get_balance() == 50000 - t['price'] * t['quantity']
 
     clearTestData()
 
@@ -52,28 +81,21 @@ def test_add_multiple_to_empty():
     clearTestData()
     p = Portfolio("Test", start_balance=1000)
 
-    transactions_to_add = [
-        Transaction(date(2000, 1, 1), "AAPL", 50, 25.50),
-        Transaction(date(2000, 1, 2), "AMZN", 30, 30.75),
-        Transaction(date(2000, 1, 3), "MSFT", 20, 40.00)
-    ]
-
     # Add multiple transactions at once
-    for t in transactions_to_add:
-        p.add_transaction(t)
+    for t in example_transactions:
+        p.add_transaction(**t)
 
     # Verify that all transactions were added and balance is updated correctly
-    assert len(p.get_transactions()) == len(transactions_to_add)
-    assert p.get_balance() == 1000 - sum(t.get_total()
-                                         for t in transactions_to_add)
+    assert len(p.get_transactions()) == len(example_transactions)
+    assert p.get_balance() == 1000 - sum(t['quantity'] * t['price']
+                                         for t in example_transactions)
 
     clearTestData()
 
 
 def test_add_transaction_to_existing() -> None:
     populateTestData()
-    s = "TSLA"
-    t = Transaction(date(2000, 1, 1), s, 250, 43.21)
+    t = example_transactions[-1]
     p = Portfolio("Test", start_balance=50000)
 
     # Check that data file was populated and p reads in transactions
@@ -81,11 +103,14 @@ def test_add_transaction_to_existing() -> None:
     pre_balance = p.get_balance()
     assert pre_transactions > 1
 
-    p.add_transaction(t)
+    p.add_transaction(**t)
 
     assert len(p.get_transactions()) == pre_transactions + 1
-    assert p.get_transactions()[-1].get_dict() == t.get_dict()
-    assert p.get_balance() == pre_balance - t.get_total()
+    assert p.get_transactions()[-1].get_price() == t['price']
+    assert p.get_transactions()[-1].get_quantity() == t['quantity']
+    assert p.get_transactions()[-1].get_security() == t['securityName']
+    assert p.get_transactions()[-1].get_transaction_date() == datetime.strftime(t['transactionDate'], "%Y-%m-%d")
+    assert p.get_balance() == pre_balance - t['price'] * t['quantity']
 
     clearTestData()
 
@@ -94,23 +119,20 @@ def test_fetch_transactions_after_adding_new_ones():
     clearTestData()
     p = Portfolio("Test", start_balance=1000)
 
-    transactions_to_add = [
-        Transaction(date(2000, 1, 1), "AAPL", 50, 25.50),
-        Transaction(date(2000, 1, 2), "AMZN", 30, 30.75),
-        Transaction(date(2000, 1, 3), "MSFT", 20, 40.00)
-    ]
-
     # Add multiple transactions at once
-    for t in transactions_to_add:
-        p.add_transaction(t)
+    for t in example_transactions:
+        p.add_transaction(**t)
 
     # Fetch transactions after adding new ones
     fetched_transactions = p.get_transactions()
 
     # Verify that the fetched transactions list is equal to the added transactions
-    assert len(fetched_transactions) == len(transactions_to_add)
-    for t1, t2 in zip(fetched_transactions, transactions_to_add):
-        assert t1.get_dict() == t2.get_dict()
+    assert len(fetched_transactions) == len(example_transactions)
+    for t1, t2 in zip(fetched_transactions, example_transactions):
+        assert t1.get_price() == t2['price']
+        assert t1.get_quantity() == t2['quantity']
+        assert t1.get_security() == t2['securityName']
+        assert t1.get_transaction_date() == datetime.strftime(t2['transactionDate'], "%Y-%m-%d")
 
     clearTestData()
 
@@ -118,12 +140,12 @@ def test_fetch_transactions_after_adding_new_ones():
 def test_add_sell_transaction():
     clearTestData()
     p = Portfolio("Test", start_balance=1000)
-    t = Transaction(date(2000, 1, 1), "AAPL", -50, 25.50)
+    t = example_transactions[1]
 
-    p.add_transaction(t)
+    p.add_transaction(**t)
 
     assert len(p.get_transactions()) == 1
-    assert p.get_balance() == 1000 - t.get_total()
+    assert p.get_balance() == 1000 - t['price'] * t['quantity']
 
     clearTestData()
 
@@ -140,12 +162,23 @@ def test_get_holdings_empty_portfolio():
 def test_get_holdings_single_security():
     clearTestData()
     p = Portfolio("Test", start_balance=1000)
-    t1 = Transaction(date(2000, 1, 1), "AAPL", 50, 25.50)
-    t2 = Transaction(date(2000, 1, 2), "AAPL", 30, 30.75)
-    p.add_transaction(t1)
-    p.add_transaction(t2)
+    t1 = {
+        "transactionDate": date(2000, 1, 1),
+        "securityName": "AAPL",
+        "quantity": 50,
+        "price": 25.50
+    }
+    t2 = {
+        "transactionDate": date(2000, 1, 2),
+        "securityName": "AAPL",
+        "quantity": 30,
+        "price": 20.75
+    }
 
-    assert p.get_holdings() == {"AAPL": 50 + 30}
+    p.add_transaction(**t1)
+    p.add_transaction(**t2)
+
+    assert p.get_holdings() == {"AAPL": t1['quantity'] + t2['quantity']}
 
     clearTestData()
 
@@ -153,13 +186,39 @@ def test_get_holdings_single_security():
 def test_get_holdings_multiple_securities():
     clearTestData()
     p = Portfolio("Test", start_balance=1000)
-    t1 = Transaction(date(2000, 1, 1), "AAPL", 50, 25.50)
-    t2 = Transaction(date(2000, 1, 2), "AMZN", 30, 30.75)
-    t3 = Transaction(date(2000, 1, 3), "AAPL", 20, 40.00)
-    p.add_transaction(t1)
-    p.add_transaction(t2)
-    p.add_transaction(t3)
+    t1 = {
+        "transactionDate": date(2000, 1, 1),
+        "securityName": "AAPL",
+        "quantity": 50,
+        "price": 25.50
+    }
+    t2 = {
+        "transactionDate": date(2000, 2, 1),
+        "securityName": "AMZN",
+        "quantity": 100,
+        "price": 2.50
+    }
+    t3 = {
+        "transactionDate": date(2000, 2, 1),
+        "securityName": "AAPL",
+        "quantity": 10,
+        "price": 30.25
+    }
+    t4 = {
+        "transactionDate": date(2000, 3, 21),
+        "securityName": "AMZN",
+        "quantity": 250,
+        "price": 1.75
+    }
 
-    assert p.get_holdings() == {"AAPL": 50 + 20, "AMZN": 30}
+    p.add_transaction(**t1)
+    p.add_transaction(**t2)
+    p.add_transaction(**t3)
+    p.add_transaction(**t4)
+
+    assert p.get_holdings() == {
+        "AAPL": t1["quantity"] + t3["quantity"],
+        "AMZN": t2["quantity"] + t4["quantity"]
+    }
 
     clearTestData()
