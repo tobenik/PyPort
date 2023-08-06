@@ -2,22 +2,34 @@ import csv
 import os
 from datetime import datetime
 from typing import List
+import configparser
 from pyport.transaction import Transaction
 
 
 class TransactionFileManager:
-    def __init__(self, file_path: str) -> None:
-        self.file_path = file_path
+    def __init__(self) -> None:
+        self.file_path = self.__get_filepath()
         self.headers: List[str] = ["date", "security", "quantity", "price"]
         self.initialize_file()
+    
+    def __get_filepath(self) -> str:
+        config = configparser.ConfigParser()
+        config.read('config/config.ini')
 
-    def initialize_file(self):
+        test_mode = os.environ.get('PYPORT_TEST_MODE', "False")
+        
+        if test_mode.lower() == 'true':
+            return config['datapaths']['test_transactions']
+        
+        return config['datapaths']['transactions']
+
+    def initialize_file(self) -> None:
         if self.is_empty():
             with open(self.file_path, 'a') as csvFile:
                 writer = csv.DictWriter(csvFile, fieldnames=self.headers)
                 writer.writeheader()
 
-    def is_empty(self):
+    def is_empty(self) -> bool:
         return os.stat(self.file_path).st_size == 0
 
     def clear_transactions(self) -> None:

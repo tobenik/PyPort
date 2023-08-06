@@ -4,9 +4,11 @@ from pyport.portfolio import Portfolio
 from pyport.transaction import Transaction
 from pyport.transaction_file_manager import TransactionFileManager
 
-data_path = "tests/testdata/transactions.csv"
-tfm = TransactionFileManager(file_path=data_path)
+tfm = None
 
+def test_initalize_tfm() -> None:
+    global tfm
+    tfm = TransactionFileManager()
 
 def clearTestData() -> None:
     tfm.clear_transactions()
@@ -22,7 +24,7 @@ def populateTestData() -> None:
 def test_create_portfolio() -> None:
     clearTestData()
     cash = 500000
-    p = Portfolio("Test", tfm, start_balance=cash)
+    p = Portfolio("Test", start_balance=cash)
 
     assert p.get_name() == "Test"
     assert len(p.get_transactions()) == 0
@@ -35,7 +37,7 @@ def test_add_transaction_to_empty() -> None:
     clearTestData()
     s = "AAPL"
     t = Transaction(date(2000, 1, 1), s, 250, 43.21)
-    p = Portfolio("Test", tfm, start_balance=50000)
+    p = Portfolio("Test", start_balance=50000)
 
     p.add_transaction(t)
 
@@ -48,7 +50,7 @@ def test_add_transaction_to_empty() -> None:
 
 def test_add_multiple_to_empty():
     clearTestData()
-    p = Portfolio("Test", tfm, start_balance=1000)
+    p = Portfolio("Test", start_balance=1000)
 
     transactions_to_add = [
         Transaction(date(2000, 1, 1), "AAPL", 50, 25.50),
@@ -72,7 +74,7 @@ def test_add_transaction_to_existing() -> None:
     populateTestData()
     s = "TSLA"
     t = Transaction(date(2000, 1, 1), s, 250, 43.21)
-    p = Portfolio("Test", tfm, start_balance=50000)
+    p = Portfolio("Test", start_balance=50000)
 
     # Check that data file was populated and p reads in transactions
     pre_transactions = len(p.get_transactions())
@@ -90,7 +92,7 @@ def test_add_transaction_to_existing() -> None:
 
 def test_fetch_transactions_after_adding_new_ones():
     clearTestData()
-    p = Portfolio("Test", tfm, start_balance=1000)
+    p = Portfolio("Test", start_balance=1000)
 
     transactions_to_add = [
         Transaction(date(2000, 1, 1), "AAPL", 50, 25.50),
@@ -115,7 +117,7 @@ def test_fetch_transactions_after_adding_new_ones():
 
 def test_add_sell_transaction():
     clearTestData()
-    p = Portfolio("Test", tfm, start_balance=1000)
+    p = Portfolio("Test", start_balance=1000)
     t = Transaction(date(2000, 1, 1), "AAPL", -50, 25.50)
 
     p.add_transaction(t)
@@ -128,7 +130,7 @@ def test_add_sell_transaction():
 
 def test_get_holdings_empty_portfolio():
     clearTestData()
-    p = Portfolio("Test", tfm, start_balance=1000)
+    p = Portfolio("Test", start_balance=1000)
 
     assert p.get_holdings() == {}
 
@@ -137,7 +139,7 @@ def test_get_holdings_empty_portfolio():
 
 def test_get_holdings_single_security():
     clearTestData()
-    p = Portfolio("Test", tfm, start_balance=1000)
+    p = Portfolio("Test", start_balance=1000)
     t1 = Transaction(date(2000, 1, 1), "AAPL", 50, 25.50)
     t2 = Transaction(date(2000, 1, 2), "AAPL", 30, 30.75)
     p.add_transaction(t1)
@@ -150,7 +152,7 @@ def test_get_holdings_single_security():
 
 def test_get_holdings_multiple_securities():
     clearTestData()
-    p = Portfolio("Test", tfm, start_balance=1000)
+    p = Portfolio("Test", start_balance=1000)
     t1 = Transaction(date(2000, 1, 1), "AAPL", 50, 25.50)
     t2 = Transaction(date(2000, 1, 2), "AMZN", 30, 30.75)
     t3 = Transaction(date(2000, 1, 3), "AAPL", 20, 40.00)
