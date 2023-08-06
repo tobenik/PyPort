@@ -2,7 +2,7 @@ from datetime import date
 from pyport.portfolio import Portfolio
 from pyport.transaction import Transaction
 from pyport.transaction_file_manager import TransactionFileManager
-from pyport.print_portfolio import PortfolioPrinter
+from pyport.portfolio_printer import PortfolioPrinter
 
 def print_info(portfolio: Portfolio) -> None:
         def print_header(header: str) -> None:
@@ -26,8 +26,7 @@ def print_info(portfolio: Portfolio) -> None:
 
 
 def main():
-    tm = TransactionFileManager(file_path='data/ex_transactions.csv')
-    portfolio = Portfolio("MyPortfolio", tm, start_balance=100000)
+    portfolio = Portfolio("MyPortfolio", start_balance=100000)
     t = Transaction(date(2023, 5, 1), "AMZN", 95, 130.24)
     portfolio.add_transaction(t)
     pp = PortfolioPrinter(portfolio, linewidth=60)
