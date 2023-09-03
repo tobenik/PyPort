@@ -2,6 +2,7 @@
 .DS_Store
 todo.txt
 testcase.ipynb
+data/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
