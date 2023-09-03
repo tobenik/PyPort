@@ -24,10 +24,10 @@ class TransactionFileManager:
         return config['datapaths']['transactions']
 
     def initialize_file(self) -> None:
-        if self.is_empty():
-            with open(self.file_path, 'a') as csvFile:
-                writer = csv.DictWriter(csvFile, fieldnames=self.headers)
-                writer.writeheader()
+        #if self.is_empty(): // Restart file every time
+        with open(self.file_path, 'w') as csvFile:
+            writer = csv.DictWriter(csvFile, fieldnames=self.headers)
+            writer.writeheader()
 
     def is_empty(self) -> bool:
         return os.stat(self.file_path).st_size == 0
